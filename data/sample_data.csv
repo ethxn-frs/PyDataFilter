@@ -1,0 +1,5 @@
+firstname,lastname,age,apprentice,grades
+John,Doe,20,True,"[85, 90, 92]"
+Jane,Smith,22,False,"[78, 80, 82]"
+Bob,Brown,19,True,"[70, 75, 80]"
+Alice,Johnson,21,False,"[88, 84, 86]"
