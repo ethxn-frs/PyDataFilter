@@ -1,4 +1,5 @@
 # src/gui.py
+import ast
 import datetime
 import tkinter as tk
 from tkinter import filedialog, messagebox
@@ -174,13 +175,30 @@ class DataApp:
 
     def update_conditions(self, event):
         field = self.field_menu.get()
-        if all(isinstance(item[field], (int, float)) for item in self.data):
+
+        # Convertir les chaînes "true"/"false" en booléens et les listes sous forme de chaînes en listes réelles
+        for item in self.data:
+            if isinstance(item[field], str):
+                if item[field].lower() == "true":
+                    item[field] = True
+                elif item[field].lower() == "false":
+                    item[field] = False
+                elif item[field].startswith("[") and item[field].endswith("]"):
+                    item[field] = ast.literal_eval(item[field])
+
+        if all(isinstance(item[field], list) for item in self.data):
             self.condition_menu.config(
-                values=["less_than", "less_than_equals", "equals", "greater_than", "greater_than_equals", "not_equals"])
+                values=["exact_length", "min_length", "max_length", "average_equals", "average_greater",
+                        "average_less"])
         elif all(isinstance(item[field], bool) for item in self.data):
             self.condition_menu.config(values=["true", "false"])
+        elif all(isinstance(item[field], (int, float)) for item in self.data):
+            self.condition_menu.config(
+                values=["less_than", "less_than_equals", "equals", "greater_than", "greater_than_equals", "not_equals"])
         elif all(isinstance(item[field], str) for item in self.data):
-            self.condition_menu.config(values=["equals", "not_equals", "contains", "not_contains"])
+            self.condition_menu.config(
+                values=["equals", "not_equals", "contains", "not_contains", "lexicographically_less_than",
+                        "lexicographically_greater_than", "starts_with", "ends_with", "lexicographically_less_than_field", "lexicographically_greater_than_field"])
         else:
             self.condition_menu.config(values=[])
 
